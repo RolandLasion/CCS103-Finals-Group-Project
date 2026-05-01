@@ -407,40 +407,59 @@ public class UI {
 		
 	ActionListener calculate = new ActionListener() {
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			
-			String username = textUsername.getText();
-			String age = textAge.getText();
-			String contactNo = textContact.getText();
-				
-			if(username.isEmpty() || age.isEmpty() || contactNo.isEmpty()) {
-			JOptionPane.showMessageDialog(cardPanel, "Customer Information Fields cannot be empty!", "Missing Customer Details", 0, null);
-			return;	
-			}
-			
-			savedCustomerDetails[usedTableSlots][0] = username;
-			savedCustomerDetails[usedTableSlots][1] = age;
-			savedCustomerDetails[usedTableSlots][2] = contactNo;
-			savedTableDisplay.addElement(username);
-			
-			for(int row = 1; row < dataInputModel.getRowCount(); row++) {
-					String service = dataInputModel.getValueAt(row, 0).toString();
-					String price = dataInputModel.getValueAt(row, 1).toString();
-					
-					savedTables[usedTableSlots].addRow(new String[] {service, price});
-					
-				
-				
-			}
-			
-			// Reset to Default
-			clearInput();
-			//for (int i = 0; i < usedTableSlots) dataInputModel.removeRow(i);
-			usedTableSlots++;
-			//	cardlay.next(cardPanel);
-			panelNewData.setVisible(true);
-			panelSavedData.setVisible(false);
-		}};
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        
+		        String username = textUsername.getText();
+		        String age = textAge.getText();
+		        String contactNo = textContact.getText();
+		            
+		        if(username.isEmpty() || age.isEmpty() || contactNo.isEmpty()) {
+		            JOptionPane.showMessageDialog(cardPanel, "Customer Information Fields cannot be empty!", "Missing Customer Details", 0);
+		            return;    
+		        }
+		     
+		        try {
+		            Integer.parseInt(age);
+		        } catch(Exception ex) {
+		            JOptionPane.showMessageDialog(cardPanel, "Invalid age!", "Error", 0);
+		            return;
+		        }
+    
+		        if (dataInputModel.getRowCount() == 0) {
+		            JOptionPane.showMessageDialog(cardPanel, "Please select at least one service!", "Error", 0);
+		            return;
+		        }
+
+		        double totalBill = 0;
+		        for (int i = 0; i < dataInputModel.getRowCount(); i++) {
+		            double price = Double.parseDouble(dataInputModel.getValueAt(i, 1).toString());
+		            totalBill += price;
+		        }
+
+		        JOptionPane.showMessageDialog(cardPanel, "Total Bill: ₱" + totalBill);
+
+		        savedCustomerDetails[usedTableSlots][0] = username;
+		        savedCustomerDetails[usedTableSlots][1] = age;
+		        savedCustomerDetails[usedTableSlots][2] = contactNo;
+		        savedTableDisplay.addElement(username);
+		        
+		        for(int row = 0; row < dataInputModel.getRowCount(); row++) {
+		            String service = dataInputModel.getValueAt(row, 0).toString();
+		            String price = dataInputModel.getValueAt(row, 1).toString();
+		            
+		            savedTables[usedTableSlots].addRow(new String[] {service, price});
+		        }
+		        
+		        // Reset to Default
+		        clearInput();
+		        //for (int i = 0; i < usedTableSlots) dataInputModel.removeRow(i);
+		        usedTableSlots++;
+		        
+                //cardlay.next(cardPanel);
+		        panelNewData.setVisible(false);
+		        panelSavedData.setVisible(true);
+		    }
+		};
 		
 }
